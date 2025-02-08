@@ -1,4 +1,4 @@
-import { execProgress, execSeparate } from "./execCommand.ts";
+import { execSeparate } from "./execCommand.ts";
 import { YTDLPUpdater } from "./modules/yt-dlp-updater.ts";
 import InputLoop from "https://deno.land/x/input@2.0.4/index.ts";
 
