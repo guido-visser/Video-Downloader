@@ -1,4 +1,4 @@
-A simple wrapper around [yt-dlp](https://github.com/yt-dlp/yt-dlp) to download the best video and audio quality
+A simple wrapper around [yt-dlp](https://github.com/yt-dlp/yt-dlp) to download any video it supports with the best video and audio quality
 
 Downloads and updates yt-dlp automagically.
 
