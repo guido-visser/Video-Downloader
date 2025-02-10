@@ -10,7 +10,7 @@ async function main() {
         "Enter Video URL(s) (comma separated):"
     );
     let urls = [userInput];
-    if (userInput.indexOf(",")) {
+    if (userInput.indexOf(",") !== -1) {
         urls = userInput.split(",").map((url) => url.trim());
     }
 
@@ -20,7 +20,7 @@ async function main() {
             "-f",
             "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
             "-o",
-            "%USERPROFILE%/Downloads/%(title)s.%(ext)s",
+            "./%(title)s.%(ext)s",
             "--merge-output-format",
             "mp4",
             url,
