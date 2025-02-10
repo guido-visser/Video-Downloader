@@ -6,5 +6,6 @@
     "imports": {
         "@rabbit-company/downloader": "jsr:@rabbit-company/downloader@^0.1.2",
         "@std/assert": "jsr:@std/assert@1"
-    }
+    },
+    "compilerOptions": { "strictNullChecks": false }
 }
