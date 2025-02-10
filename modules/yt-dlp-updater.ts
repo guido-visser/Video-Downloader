@@ -8,7 +8,7 @@ const input = new InputLoop();
 
 export const YTDLPUpdater = async () => {
     console.log("Check for yt-dlp update...");
-    let res;
+    let res: { assets: ReleaseAsset[] } = null;
     try {
         const call = await fetch(
             "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
@@ -21,26 +21,43 @@ export const YTDLPUpdater = async () => {
     }
     if (!res) {
         console.log("Something went wrong with checking for updates");
+        await input.wait();
     }
-    const latestAssetData = res?.assets.find(
-        (asset: ReleaseAsset) => asset.name === "yt-dlp.exe"
+    const latestAssetData: ReleaseAsset = res?.assets.find(
+        (asset) => asset.name === "yt-dlp.exe"
     );
 
-    if (!(await exists("./latest-dlp.json"))) {
-        await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
+    let currentAssetData: ReleaseAsset = null;
+    try {
+        if (!(await exists("./latest-dlp.json"))) {
+            await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
+            currentAssetData = latestAssetData;
+        }
 
+        if (!currentAssetData) {
+            currentAssetData = await jsonfile.readFile("./latest-dlp.json");
+        }
+
+        let downloaded = false;
         if (!(await exists("./yt-dlp.exe"))) {
             console.log("YT DLP not found, downloading latest version...");
             await downloadLatestYTDLP(latestAssetData);
+            downloaded = true;
         }
-    } else {
-        const currentAssetData = await jsonfile.readFile("./latest-dlp.json");
-        if (currentAssetData.node_id !== latestAssetData.node_id) {
+
+        if (
+            !downloaded &&
+            currentAssetData.node_id !== latestAssetData.node_id
+        ) {
             console.log("New version of yt-dlp is available. Downloading...");
             await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
             await downloadLatestYTDLP(latestAssetData);
         } else {
             console.log("You have the latest version of YT DLP");
+            console.clear();
         }
+    } catch (e) {
+        console.log("Something went wrong", e);
+        await input.wait();
     }
 };
