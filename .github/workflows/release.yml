@@ -1,0 +1,52 @@
+name: Build and Release
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            # Step 1: Check out the repository.
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            # Step 2: Set up Deno
+            - name: Set up Deno
+              uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+
+            # Step 3: Run the build task
+            - name: Run build task
+              run: deno task build
+
+            # (Optional) List files to verify that the executable is created.
+            - name: List artifacts
+              run: ls -l
+
+            # Step 4: Create a GitHub release.
+            # Here we use the "softprops/action-gh-release" action.
+            - name: Create release
+              id: create_release
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: v${{ github.run_number }}
+                  name: Release v${{ github.run_number }}
+                  draft: false
+                  prerelease: false
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # Step 5: Upload the Windows executable as an asset.
+            # Adjust the file path if your build task outputs a different name or location.
+            - name: Upload release asset
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: v${{ github.run_number }}
+                  files: video-downloader.exe
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
