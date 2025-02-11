@@ -3,6 +3,7 @@ import jsonfile from "npm:jsonfile";
 import { ReleaseAsset } from "../types.ts";
 import { downloadLatestYTDLP } from "./download-latest-yt-dlp.ts";
 import InputLoop from "https://deno.land/x/input@2.0.4/index.ts";
+import { getYTDLPVersion } from "../execCommand.ts";
 
 const input = new InputLoop();
 
@@ -27,17 +28,7 @@ export const YTDLPUpdater = async () => {
         (asset) => asset.name === "yt-dlp.exe"
     );
 
-    let currentAssetData: ReleaseAsset = null;
     try {
-        if (!(await exists("./latest-dlp.json"))) {
-            await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
-            currentAssetData = latestAssetData;
-        }
-
-        if (!currentAssetData) {
-            currentAssetData = await jsonfile.readFile("./latest-dlp.json");
-        }
-
         let downloaded = false;
         if (!(await exists("./yt-dlp.exe"))) {
             console.log("YT DLP not found, downloading latest version...");
@@ -45,9 +36,11 @@ export const YTDLPUpdater = async () => {
             downloaded = true;
         }
 
+        const currentVersion = await getYTDLPVersion();
+
         if (
             !downloaded &&
-            currentAssetData.node_id !== latestAssetData.node_id
+            latestAssetData.browser_download_url.indexOf(currentVersion) === -1
         ) {
             console.log("New version of yt-dlp is available. Downloading...");
             await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
