@@ -2,6 +2,8 @@ A simple Deno wrapper around [yt-dlp](https://github.com/yt-dlp/yt-dlp) to downl
 
 Downloads and updates yt-dlp automagically.
 
+[Supported sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
+
 ## Usage
 
 Just open the executable and follow the prompt.

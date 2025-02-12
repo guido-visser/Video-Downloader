@@ -43,7 +43,6 @@ export const YTDLPUpdater = async () => {
             latestAssetData.browser_download_url.indexOf(currentVersion) === -1
         ) {
             console.log("New version of yt-dlp is available. Downloading...");
-            await jsonfile.writeFile("./latest-dlp.json", latestAssetData);
             await downloadLatestYTDLP(latestAssetData);
         } else {
             console.log("You have the latest version of YT DLP");
